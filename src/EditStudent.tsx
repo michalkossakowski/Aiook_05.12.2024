@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { StudentClass } from './types/Student';
+import { useNavigate } from 'react-router-dom';
 
 type StudentPropsType = {
 
@@ -10,6 +11,7 @@ type StudentPropsType = {
 }
 
 export default function EditStudent(props: StudentPropsType): React.ReactElement {
+    const navigate = useNavigate();
 
     const [editedName, setEditedName] = useState<string>()
     const [editedSurname, setEditedSurname] = useState<string>()
@@ -30,6 +32,7 @@ export default function EditStudent(props: StudentPropsType): React.ReactElement
         if(editedName && editedSurname && editedIndex && editeBirthDate){
             const student = new StudentClass(editedName ,editedSurname, editedIndex, editeBirthDate);
             props.editFn(student);
+            navigate('/');
         }
     }
 
