@@ -9,7 +9,6 @@ type StudentPropsType = {
     studentToEdit: StudentClass | undefined;
 }
 
-//export default function Student({student}:{student: StudentClass}) {
 export default function EditStudent(props: StudentPropsType): React.ReactElement {
 
     const [editedName, setEditedName] = useState<string>()

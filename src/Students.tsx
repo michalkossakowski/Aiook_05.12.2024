@@ -5,6 +5,7 @@ import Student from './Student';
 import { StudentClass, StudentType } from './types/Student';
 import AddStudent from './AddStudent';
 import EditStudent from './EditStudent';
+import DeleteStudents from './DeleteStudents';
 
 
 export default function Students() {
@@ -14,14 +15,12 @@ export default function Students() {
     new StudentClass('Jan', 'Kowlaski', 2345, new Date('1999-10-23')),
     new StudentClass('Adrian', 'Duda', 156789, new Date('2001-04-01'))
   ]);
-  const [showAddForm, changeValue] = useState(false);
-  
   const [selectedStudent, changeSelectedStudent] = useState<StudentClass>();
-  const [showEditForm, changeShowEditForm] = useState(false);
+  const [showForm, changeShowForm] = useState("");
 
 
   const addNewStudent = (student: StudentClass) => {
-    changeValue(false)
+    changeShowForm("")
     console.log("add fn invoked")
     //studentList.push(student);
     let students = [...studentList];
@@ -30,7 +29,7 @@ export default function Students() {
   }
 
   const saveStudent = (student: StudentClass) => {
-    changeShowEditForm(false)
+    changeShowForm("")
     console.log("save fn invoked")
     const students = studentList.map((s) => 
       s.Index_nr === selectedStudent?.Index_nr ? student : s
@@ -39,6 +38,9 @@ export default function Students() {
     changeSelectedStudent(undefined)
   }
 
+  const updateStudents = (students: StudentClass[]) => {
+    updateList([...students])
+  }
 
   return (
 
@@ -48,7 +50,7 @@ export default function Students() {
         <ul>
           {studentList.map((el) => {
             return  <li key={el.Index_nr}>
-                      <div style={{ color: selectedStudent === el ? "red" : ""}} onClick={() => {changeSelectedStudent(el); changeValue(false);changeShowEditForm(false)}}>
+                      <div style={{ color: selectedStudent === el ? "red" : ""}} onClick={() => {changeSelectedStudent(el); changeShowForm("")}}>
                         <Student student={el}/>
                       </div>
                     </li>
@@ -56,17 +58,23 @@ export default function Students() {
 
         </ul>}
       {studentList.length === 0 && <p>No students stored</p>}
-      {!showAddForm &&
-        <button onClick={() => {changeValue(true);changeShowEditForm(false); changeSelectedStudent(undefined)}}>Add student</button>
+     
+      {showForm !== "add" &&
+        <button onClick={() => {changeShowForm("add"); changeSelectedStudent(undefined)}}>Add student</button>
       }
-      {showAddForm && <AddStudent addFn={addNewStudent} />}
-      
-
-      {!showEditForm && selectedStudent &&
-        <button onClick={() => {changeShowEditForm(true)}}>Edit student</button>
+        
+      {showForm !== "edit" && selectedStudent &&
+        <button onClick={() => {changeShowForm("edit")}}>Edit student</button>
+      }
+   
+      {showForm !== "delete" &&
+        <button onClick={() => {changeShowForm("delete")}}>Delete students</button>
       }
 
-      {showEditForm && <EditStudent studentToEdit={selectedStudent} editFn={saveStudent} />}
+      {showForm === "add" && <AddStudent addFn={addNewStudent} />}
+      {showForm === "edit" && <EditStudent studentToEdit={selectedStudent} editFn={saveStudent} />}
+      {showForm === "delete" && <DeleteStudents students={studentList} onSave={updateStudents} />}
+
     </>
   );
 }
