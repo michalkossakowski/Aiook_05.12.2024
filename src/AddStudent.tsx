@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { StudentClass } from './types/Student';
+import { useNavigate } from 'react-router-dom';
 
 type StudentStateType = {
   new_student: StudentClass;
@@ -15,6 +16,8 @@ type StudentPropsType = {
 
 //export default function Student({student}:{student: StudentClass}) {
 export default function AddStudent(props: StudentPropsType): React.ReactElement {
+  const navigate = useNavigate();
+
   const [new_student, changeStudentData] = useState({
     name: '', surname: '', index_nr: 0, dataUrodzenia: new Date(), adres: '', grupa: '', stypendium: 0,
     marks: []
@@ -34,6 +37,7 @@ export default function AddStudent(props: StudentPropsType): React.ReactElement 
   const addStudent = (): void => {
     const student = new StudentClass(new_student.name, new_student.surname, new_student.index_nr, new_student.dataUrodzenia);
     props.addFn(student);
+    navigate('/');
   }
 
   return (

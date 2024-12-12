@@ -5,68 +5,42 @@ import Student from './Student';
 import { StudentClass, StudentType } from './types/Student';
 import AddStudent from './AddStudent';
 import EditStudent from './EditStudent';
+import DeleteStudents from './DeleteStudents';
+import { NavLink } from 'react-router-dom';
 
 
-export default function Students() {
+type StudentPropsType = {
+  studentList: StudentClass[];
+  changeSelectedStudent: (student: StudentClass) => void;
+}
+
+
+export default function Students(props: StudentPropsType) {
   const listTitle = 'Students list';
-  const [studentList, updateList] = useState([
-    new StudentClass('Ala', 'Makota', 123485, new Date('2000-01-21')),
-    new StudentClass('Jan', 'Kowlaski', 2345, new Date('1999-10-23')),
-    new StudentClass('Adrian', 'Duda', 156789, new Date('2001-04-01'))
-  ]);
-  const [showAddForm, changeValue] = useState(false);
-  
-  const [selectedStudent, changeSelectedStudent] = useState<StudentClass>();
-  const [showEditForm, changeShowEditForm] = useState(false);
-
-
-  const addNewStudent = (student: StudentClass) => {
-    changeValue(false)
-    console.log("add fn invoked")
-    //studentList.push(student);
-    let students = [...studentList];
-    students.push(student)
-    updateList(students)
-  }
-
-  const saveStudent = (student: StudentClass) => {
-    changeShowEditForm(false)
-    console.log("save fn invoked")
-    const students = studentList.map((s) => 
-      s.Index_nr === selectedStudent?.Index_nr ? student : s
-    )
-    updateList(students)
-    changeSelectedStudent(undefined)
-  }
-
-
   return (
 
     <>
       {listTitle}
-      {studentList.length > 0 &&
+      {props.studentList.length > 0 &&
         <ul>
-          {studentList.map((el) => {
+          {props.studentList.map((el) => {
             return  <li key={el.Index_nr}>
-                      <div style={{ color: selectedStudent === el ? "red" : ""}} onClick={() => {changeSelectedStudent(el); changeValue(false);changeShowEditForm(false)}}>
+                      <div onClick={() => {props.changeSelectedStudent(el);}}>
                         <Student student={el}/>
+                        <button><NavLink to="/edit">Edit student</NavLink></button>
                       </div>
                     </li>
           })}
 
         </ul>}
-      {studentList.length === 0 && <p>No students stored</p>}
-      {!showAddForm &&
-        <button onClick={() => {changeValue(true);changeShowEditForm(false); changeSelectedStudent(undefined)}}>Add student</button>
-      }
-      {showAddForm && <AddStudent addFn={addNewStudent} />}
-      
+      {props.studentList.length === 0 && <p>No students stored</p>}
 
-      {!showEditForm && selectedStudent &&
-        <button onClick={() => {changeShowEditForm(true)}}>Edit student</button>
-      }
-
-      {showEditForm && <EditStudent studentToEdit={selectedStudent} editFn={saveStudent} />}
+      <button>
+        <NavLink to="/add">Add student</NavLink>
+      </button>
+      <button>
+        <NavLink to="/delete">Delete students</NavLink>
+      </button>
     </>
   );
 }
